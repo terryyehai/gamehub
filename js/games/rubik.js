@@ -1,285 +1,205 @@
 (function() {
 /* ============================================
    魔術方塊遊戲 (Rubik's Cube)
+   完整 3x3x3 還原遊戲
    ============================================ */
-let cube = [];
-let isAnimating = false;
-let canvasRubik, ctxRubik;
-let cubeSize = 60;
-let faces = ['front', 'back', 'left', 'right', 'top', 'bottom'];
-let faceColors = {
-    front: '#ff4444',  // 紅
-    back: '#ff8800',   // 橙
-    left: '#00aa00',    // 綠
-    right: '#0066ff',   // 藍
-    top: '#ffffff',     // 白
-    bottom: '#ffff00'   // 黃
+
+let cube = {
+    U: [], D: [], F: [], B: [], L: [], R: []
 };
 
-function cleanup() {
-    window.removeEventListener('resize', resizeChessCanvas);
-}
+const colors = {
+    U: '#ffffff', D: '#ffff00', F: '#ff4444', 
+    B: '#ff8800', L: '#00aa00', R: '#0066ff'
+};
+
+let moveCount = 0;
+let startTime = 0;
+
+function cleanup() {}
 
 function initGame(container) {
     const content = document.getElementById('gameContent');
-    
     content.innerHTML = `
         <div class="rubik-container">
+            <div class="rubik-info">
+                <div class="rubik-moves">步數: <span id="rubikMoves">0</span></div>
+                <div class="rubik-timer">時間: <span id="rubikTimer">0:00</span></div>
+            </div>
             <div class="rubik-controls">
-                <button class="rubik-btn" onclick="scrambleCube()">🔀 洗亂</button>
+                <button class="rubik-btn" onclick="scrambleRubik()">🔀 洗亂</button>
                 <button class="rubik-btn" onclick="resetRubik()">🔄 重置</button>
             </div>
-            <canvas id="rubikCanvas"></canvas>
-            <div class="rubik-instructions">
-                <p>點擊面旋轉 | 支援觸控滑動</p>
+            <div class="rubik-canvas-wrapper">
+                <canvas id="rubikCanvas"></canvas>
             </div>
+            <div class="rubik-buttons">
+                <button class="rb-btn" onclick="rotateLayer('U')">U 上</button>
+                <button class="rb-btn" onclick="rotateLayer('D')">D 下</button>
+                <button class="rb-btn" onclick="rotateLayer('F')">F 前</button>
+                <button class="rb-btn" onclick="rotateLayer('B')">B 後</button>
+                <button class="rb-btn" onclick="rotateLayer('L')">L 左</button>
+                <button class="rb-btn" onclick="rotateLayer('R')">R 右</button>
+            </div>
+            <p class="rubik-hint">點擊按鈕旋轉面 | 目標：還原六面</p>
         </div>
     `;
-    
-    canvasRubik = document.getElementById('rubikCanvas');
-    ctxRubik = canvasRubik.getContext('2d');
-    
-    resizeRubikCanvas();
-    window.addEventListener('resize', resizeRubikCanvas);
-    
     initRubik();
-    drawRubik();
-    
-    // 綁定事件
-    canvasRubik.addEventListener('click', handleRubikClick);
-    canvasRubik.addEventListener('touchstart', handleRubikTouch, { passive: false });
-}
-
-function resizeRubikCanvas() {
-    const container = canvasRubik.parentElement;
-    const size = Math.min(container.clientWidth - 40, 400);
-    canvasRubik.width = size;
-    canvasRubik.height = size;
-    cubeSize = size / 4;
-    drawRubik();
+    startTimer();
 }
 
 function initRubik() {
-    cube = {};
-    faces.forEach(face => {
-        cube[face] = [];
-        for (let i = 0; i < 9; i++) {
-            cube[face].push(faceColors[face]);
-        }
-    });
+    for (let face in cube) cube[face] = Array(9).fill(colors[face]);
+    moveCount = 0;
+    updateRubikUI();
+    drawRubik();
 }
 
-function drawRubik() {
-    if (!ctxRubik || !cube) return;
-    if (!ctxRubik) return;
-    
-    ctxRubik.fillStyle = '#1a1a2e';
-    ctxRubik.fillRect(0, 0, canvasRubik.width, canvasRubik.height);
-    
-    // 繪製三個可見的面
-    // 前面
-    drawFace('front', cubeSize * 0.5, cubeSize * 0.5);
-    // 上面
-    drawFaceTop('top', cubeSize * 0.5, cubeSize * 0);
-    // 右面
-    drawFaceRight('right', cubeSize, cubeSize * 0.5);
+function startTimer() {
+    startTime = Date.now();
+    if (window.rubikTimer) clearInterval(window.rubikTimer);
+    window.rubikTimer = setInterval(updateRubikTimer, 1000);
 }
 
-function drawFace(face, offsetX, offsetY) {
-    const size = cubeSize;
-    
-    for (let row = 0; row < 3; row++) {
-        for (let col = 0; col < 3; col++) {
-            const idx = row * 3 + col;
-            const color = cube[face][idx];
-            
-            ctxRubik.fillStyle = color;
-            ctxRubik.fillRect(
-                offsetX + col * size + 2,
-                offsetY + row * size + 2,
-                size - 4, size - 4
-            );
-            
-            // 邊框
-            ctxRubik.strokeStyle = '#000';
-            ctxRubik.lineWidth = 2;
-            ctxRubik.strokeRect(
-                offsetX + col * size + 2,
-                offsetY + row * size + 2,
-                size - 4, size - 4
-            );
-        }
-    }
+function updateRubikTimer() {
+    if (!startTime) return;
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const min = Math.floor(elapsed / 60);
+    const sec = elapsed % 60;
+    document.getElementById('rubikTimer').textContent = min + ':' + sec.toString().padStart(2, '0');
 }
 
-function drawFaceTop(face, offsetX, offsetY) {
-    const size = cubeSize;
-    const skew = size * 0.5;
-    
-    ctxRubik.save();
-    ctxRubik.transform(1, -0.5, 0, 1, 0, 0);
-    
-    for (let row = 0; row < 3; row++) {
-        for (let col = 0; col < 3; col++) {
-            const idx = row * 3 + col;
-            const color = cube[face][idx];
-            
-            ctxRubik.fillStyle = color;
-            const x = (offsetX + col * size) / 1;
-            const y = (offsetY + row * size) * 1;
-            ctxRubik.fillRect(x, y, size - 4, size - 4);
-        }
-    }
-    
-    ctxRubik.restore();
+function updateRubikUI() {
+    document.getElementById('rubikMoves').textContent = moveCount;
 }
 
-function drawFaceRight(face, offsetX, offsetY) {
-    const size = cubeSize;
-    const skew = size * 0.5;
-    
-    ctxRubik.save();
-    ctxRubik.transform(1, 0.5, 0, 1, 0, 0);
-    
-    for (let row = 0; row < 3; row++) {
-        for (let col = 0; col < 3; col++) {
-            const idx = row * 3 + col;
-            const color = cube[face][idx];
-            
-            ctxRubik.fillStyle = color;
-            const x = (offsetX + col * size) / 1;
-            const y = (offsetY + row * size) * 1;
-            ctxRubik.fillRect(x, y, size - 4, size - 4);
-        }
-    }
-    
-    ctxRubik.restore();
-}
-
-function handleRubikClick(e) {
-    if (isAnimating) return;
-    
-    const rect = canvasRubik.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    // 簡單的旋轉邏輯
-    const face = detectFace(x, y);
-    if (face) {
-        rotateFace(face);
-    }
-}
-
-function handleRubikTouch(e) {
-    e.preventDefault();
-    if (e.touches.length === 1) {
-        handleRubikClick(e.touches[0]);
-    }
-}
-
-function detectFace(x, y) {
-    const size = cubeSize;
-    
-    // 檢測點擊在哪個面
-    if (x < size * 3.5 && y < size * 3.5 && y > size * 0.5 - (x - size * 0.5) * 0.5) {
-        return 'front';
-    }
-    if (x > size * 3.5 && y < size * 3.5 - (x - size * 3.5) * 0.5) {
-        return 'right';
-    }
-    if (y < size * 0.5 && x < size * 3.5) {
-        return 'top';
-    }
-    return null;
-}
-
-function rotateFace(face) {
-    isAnimating = true;
-    
-    // 順時針旋轉面
-    const f = cube[face];
-    const temp = [f[0], f[1], f[2], f[3], f[4], f[5], f[6], f[7], f[8]];
-    f[0] = temp[6]; f[1] = temp[3]; f[2] = temp[0];
-    f[3] = temp[7]; f[4] = temp[4]; f[5] = temp[1];
-    f[6] = temp[8]; f[7] = temp[5]; f[8] = temp[2];
-    
-    // 旋轉相鄰邊
-    rotateEdges(face);
-    
+function rotateLayer(layer, clockwise = true) {
+    cube[layer] = rotateFace(cube[layer], clockwise);
+    rotateEdges(layer, clockwise);
+    moveCount++;
+    updateRubikUI();
     drawRubik();
     sound.move();
-    
-    setTimeout(() => {
-        isAnimating = false;
-    }, 200);
+    setTimeout(checkSolved, 100);
 }
 
-function rotateEdges(face) {
-    const temp = [];
-    
-    switch(face) {
-        case 'front':
-            temp[0] = cube.top[6]; temp[1] = cube.top[7]; temp[2] = cube.top[8];
-            cube.top[6] = cube.left[8]; cube.top[7] = cube.left[5]; cube.top[8] = cube.left[2];
-            cube.left[2] = cube.bottom[0]; cube.left[5] = cube.bottom[1]; cube.left[8] = cube.bottom[2];
-            cube.bottom[0] = cube.right[6]; cube.bottom[1] = cube.right[3]; cube.bottom[2] = cube.right[0];
-            cube.right[0] = temp[0]; cube.right[3] = temp[1]; cube.right[6] = temp[2];
+function rotateFace(face, cw) {
+    const f = [...face];
+    if (cw) {
+        return [f[6], f[3], f[0], f[7], f[4], f[1], f[8], f[5], f[2]];
+    }
+    return [f[2], f[5], f[8], f[1], f[4], f[7], f[0], f[3], f[6]];
+}
+
+function rotateEdges(layer, cw) {
+    let t;
+    switch(layer) {
+        case 'U':
+            if (cw) { t = [cube.F[0],cube.F[1],cube.F[2]]; [cube.F[0],cube.F[1],cube.F[2]] = [cube.R[0],cube.R[1],cube.R[2]]; [cube.R[0],cube.R[1],cube.R[2]] = [cube.B[0],cube.B[1],cube.B[2]]; [cube.B[0],cube.B[1],cube.B[2]] = [cube.L[0],cube.L[1],cube.L[2]]; [cube.L[0],cube.L[1],cube.L[2]] = t; }
+            else { t = [cube.F[0],cube.F[1],cube.F[2]]; [cube.F[0],cube.F[1],cube.F[2]] = [cube.L[0],cube.L[1],cube.L[2]]; [cube.L[0],cube.L[1],cube.L[2]] = [cube.B[0],cube.B[1],cube.B[2]]; [cube.B[0],cube.B[1],cube.B[2]] = [cube.R[0],cube.R[1],cube.R[2]]; [cube.R[0],cube.R[1],cube.R[2]] = t; }
             break;
-        case 'top':
-            temp[0] = cube.front[0]; temp[1] = cube.front[1]; temp[2] = cube.front[2];
-            cube.front[0] = cube.right[0]; cube.front[1] = cube.right[1]; cube.front[2] = cube.right[2];
-            cube.right[0] = cube.back[0]; cube.right[1] = cube.back[1]; cube.right[2] = cube.back[2];
-            cube.back[0] = cube.left[0]; cube.back[1] = cube.left[1]; cube.back[2] = cube.left[2];
-            cube.left[0] = temp[0]; cube.left[1] = temp[1]; cube.left[2] = temp[2];
+        case 'D':
+            if (cw) { t = [cube.F[6],cube.F[7],cube.F[8]]; [cube.F[6],cube.F[7],cube.F[8]] = [cube.L[6],cube.L[7],cube.L[8]]; [cube.L[6],cube.L[7],cube.L[8]] = [cube.B[6],cube.B[7],cube.B[8]]; [cube.B[6],cube.B[7],cube.B[8]] = [cube.R[6],cube.R[7],cube.R[8]]; [cube.R[6],cube.R[7],cube.R[8]] = t; }
+            else { t = [cube.F[6],cube.F[7],cube.F[8]]; [cube.F[6],cube.F[7],cube.F[8]] = [cube.R[6],cube.R[7],cube.R[8]]; [cube.R[6],cube.R[7],cube.R[8]] = [cube.B[6],cube.B[7],cube.B[8]]; [cube.B[6],cube.B[7],cube.B[8]] = [cube.L[6],cube.L[7],cube.L[8]]; [cube.L[6],cube.L[7],cube.L[8]] = t; }
             break;
-        case 'right':
-            temp[0] = cube.top[2]; temp[1] = cube.top[5]; temp[2] = cube.top[8];
-            cube.top[2] = cube.front[2]; cube.top[5] = cube.front[5]; cube.top[8] = cube.front[8];
-            cube.front[2] = cube.bottom[2]; cube.front[5] = cube.bottom[5]; cube.front[8] = cube.bottom[8];
-            cube.bottom[2] = cube.back[6]; cube.bottom[5] = cube.back[3]; cube.bottom[8] = cube.back[0];
-            cube.back[0] = temp[2]; cube.back[3] = temp[1]; cube.back[6] = temp[0];
+        case 'F':
+            if (cw) { t = [cube.U[6],cube.U[7],cube.U[8]]; [cube.U[6],cube.U[7],cube.U[8]] = [cube.L[8],cube.L[5],cube.L[2]]; [cube.L[2],cube.L[5],cube.L[8]] = [cube.D[0],cube.D[1],cube.D[2]]; [cube.D[0],cube.D[1],cube.D[2]] = [cube.R[6],cube.R[3],cube.R[0]]; [cube.R[0],cube.R[3],cube.R[6]] = t; }
+            else { t = [cube.U[6],cube.U[7],cube.U[8]]; [cube.U[6],cube.U[7],cube.U[8]] = [cube.R[0],cube.R[3],cube.R[6]]; [cube.R[0],cube.R[3],cube.R[6]] = [cube.D[2],cube.D[1],cube.D[0]]; [cube.D[0],cube.D[1],cube.D[2]] = [cube.L[2],cube.L[5],cube.L[8]]; [cube.L[2],cube.L[5],cube.L[8]] = [t[2],t[1],t[0]]; }
+            break;
+        case 'B':
+            if (cw) { t = [cube.U[0],cube.U[1],cube.U[2]]; [cube.U[0],cube.U[1],cube.U[2]] = [cube.R[2],cube.R[5],cube.R[8]]; [cube.R[2],cube.R[5],cube.R[8]] = [cube.D[8],cube.D[7],cube.D[6]]; [cube.D[6],cube.D[7],cube.D[8]] = [cube.L[0],cube.L[3],cube.L[6]]; [cube.L[0],cube.L[3],cube.L[6]] = [t[2],t[1],t[0]]; }
+            else { t = [cube.U[0],cube.U[1],cube.U[2]]; [cube.U[0],cube.U[1],cube.U[2]] = [cube.L[6],cube.L[3],cube.L[0]]; [cube.L[0],cube.L[3],cube.L[6]] = [cube.D[6],cube.D[7],cube.D[8]]; [cube.D[6],cube.D[7],cube.D[8]] = [cube.R[8],cube.R[5],cube.R[2]]; [cube.R[2],cube.R[5],cube.R[8]] = t; }
+            break;
+        case 'L':
+            if (cw) { t = [cube.U[0],cube.U[3],cube.U[6]]; [cube.U[0],cube.U[3],cube.U[6]] = [cube.B[8],cube.B[5],cube.B[2]]; [cube.B[2],cube.B[5],cube.B[8]] = [cube.D[6],cube.D[3],cube.D[0]]; [cube.D[0],cube.D[3],cube.D[6]] = [cube.F[0],cube.F[3],cube.F[6]]; [cube.F[0],cube.F[3],cube.F[6]] = t; }
+            else { t = [cube.U[0],cube.U[3],cube.U[6]]; [cube.U[0],cube.U[3],cube.U[6]] = [cube.F[0],cube.F[3],cube.F[6]]; [cube.F[0],cube.F[3],cube.F[6]] = [cube.D[0],cube.D[3],cube.D[6]]; [cube.D[0],cube.D[3],cube.D[6]] = [cube.B[8],cube.B[5],cube.B[2]]; [cube.B[2],cube.B[5],cube.B[8]] = [t[2],t[1],t[0]]; }
+            break;
+        case 'R':
+            if (cw) { t = [cube.U[2],cube.U[5],cube.U[8]]; [cube.U[2],cube.U[5],cube.U[8]] = [cube.F[2],cube.F[5],cube.F[8]]; [cube.F[2],cube.F[5],cube.F[8]] = [cube.D[2],cube.D[5],cube.D[8]]; [cube.D[2],cube.D[5],cube.D[8]] = [cube.B[6],cube.B[3],cube.B[0]]; [cube.B[0],cube.B[3],cube.B[6]] = [t[2],t[1],t[0]]; }
+            else { t = [cube.U[2],cube.U[5],cube.U[8]]; [cube.U[2],cube.U[5],cube.U[8]] = [cube.B[6],cube.B[3],cube.B[0]]; [cube.B[0],cube.B[3],cube.B[6]] = [cube.D[8],cube.D[5],cube.D[2]]; [cube.D[2],cube.D[5],cube.D[8]] = [cube.F[2],cube.F[5],cube.F[8]]; [cube.F[2],cube.F[5],cube.F[8]] = t; }
             break;
     }
 }
 
-function scrambleCube() {
-    const moves = ['front', 'top', 'right', 'back', 'left', 'bottom'];
-    let count = 0;
-    
-    const interval = setInterval(() => {
-        const face = moves[Math.floor(Math.random() * moves.length)];
-        rotateFace(face);
-        count++;
-        
-        if (count >= 10) {
-            clearInterval(interval);
-        }
-    }, 250);
-    
-    sound.button();
+function checkSolved() {
+    for (let face in cube) {
+        const c = cube[face][0];
+        for (let i = 1; i < 9; i++) if (cube[face][i] !== c) return false;
+    }
+    clearInterval(window.rubikTimer);
+    setTimeout(() => { try { alert('🎉 恭喜還原！步數: ' + moveCount); } catch(e) {} sound.win(); }, 100);
+    return true;
 }
 
-function resetRubik() {
+function scrambleRubik() {
+    const layers = ['U','D','F','B','L','R'];
     initRubik();
+    startTime = Date.now();
+    for (let i = 0; i < 20; i++) {
+        const layer = layers[Math.floor(Math.random() * 6)];
+        const cw = Math.random() > 0.5;
+        cube[layer] = rotateFace(cube[layer], cw);
+        rotateEdges(layer, cw);
+    }
+    moveCount = 0;
+    updateRubikUI();
     drawRubik();
     sound.button();
 }
 
-// 樣式
+function resetRubik() { initRubik(); startTimer(); sound.button(); }
+
+function drawRubik() {
+    const canvas = document.getElementById('rubikCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const size = 300;
+    canvas.width = size;
+    canvas.height = size;
+    ctx.fillStyle = '#1a1a2e';
+    ctx.fillRect(0, 0, size, size);
+    const cs = size / 7;
+    drawFace(ctx, 'F', cs * 2.5, cs * 3.5, cs);
+    drawFace(ctx, 'U', cs * 2.5, cs * 0.5, cs);
+    drawFace(ctx, 'R', cs * 4.5, cs * 3.5, cs);
+    drawFace(ctx, 'D', cs * 2.5, cs * 5.5, cs);
+}
+
+function drawFace(ctx, face, x, y, size) {
+    const cs = size / 3;
+    for (let r = 0; r < 3; r++) {
+        for (let c = 0; c < 3; c++) {
+            const color = cube[face][r * 3 + c];
+            ctx.fillStyle = color;
+            ctx.fillRect(x + c * cs + 1, y + r * cs + 1, cs - 2, cs - 2);
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(x + c * cs, y + r * cs, cs, cs);
+        }
+    }
+}
+
 const rubikStyle = document.createElement('style');
 rubikStyle.textContent = `
-    .rubik-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem; }
-    .rubik-controls { display: flex; gap: 1rem; }
-    .rubik-btn {
-        background: var(--tertiary); border: 1px solid var(--card-border);
-        color: var(--text); padding: 0.6rem 1.5rem; border-radius: 8px;
-        font-size: 1rem; cursor: pointer; transition: transform 0.2s;
-    }
-    .rubik-btn:hover { background: var(--accent); border-color: var(--accent); transform: scale(1.05); }
-    #rubikCanvas { border-radius: 12px; box-shadow: var(--glow); }
-    .rubik-instructions { color: var(--text-dim); font-size: 0.9rem; }
+    .rubik-container { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.5rem; width: 100%; }
+    .rubik-info { display: flex; gap: 2rem; font-size: 1rem; }
+    .rubik-moves { color: var(--accent); }
+    .rubik-timer { color: var(--accent2); }
+    .rubik-controls { display: flex; gap: 0.5rem; }
+    .rubik-btn { background: var(--tertiary); border: 1px solid var(--card-border); color: var(--text); padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; }
+    .rubik-btn:hover { background: var(--accent); }
+    .rubik-canvas-wrapper { padding: 0.5rem; }
+    #rubikCanvas { max-width: 100%; height: auto; border-radius: 8px; }
+    .rubik-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.3rem; width: 100%; max-width: 250px; }
+    .rb-btn { background: var(--tertiary); border: 1px solid var(--card-border); color: var(--text); padding: 0.5rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+    .rb-btn:hover { background: var(--accent); }
+    .rubik-hint { color: var(--text-dim); font-size: 0.8rem; }
 `;
 document.head.appendChild(rubikStyle);
+
+window.initGame = initGame;
 window.cleanup = cleanup;
-    window.initGame = initGame;
+window.rotateLayer = rotateLayer;
+window.scrambleRubik = scrambleRubik;
+window.resetRubik = resetRubik;
 })();

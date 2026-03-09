@@ -147,6 +147,12 @@ function loadGame(gameId) {
     const title = document.getElementById('gameTitle');
     const content = document.getElementById('gameContent');
     
+    // 確保容器有正確的尺寸
+    container.style.display = 'flex';
+    content.style.display = 'flex';
+    content.style.minHeight = '300px';
+    content.style.width = '100%';
+    
     title.textContent = `${game.icon} ${game.name}`;
     container.classList.add('active');
     
@@ -158,9 +164,17 @@ function loadGame(gameId) {
     script.src = game.file;
     script.onload = () => {
         // 遊戲腳本載入完成
-        if (typeof initGame === 'function') {
-            initGame(content);
-            currentGame = { id: gameId, close: typeof closeGame === 'function' ? closeGame : null };
+        try {
+            if (typeof initGame === 'function') {
+                initGame(content);
+                currentGame = { id: gameId, close: typeof closeGame === 'function' ? closeGame : null };
+            }
+        } catch(e) {
+            console.error('Game error:', e);
+            content.innerHTML = `<div style="text-align:center;padding:2rem;color:red;">
+                <p>遊戲載入錯誤: ${e.message}</p>
+                <button onclick="closeGame()" class="game-btn">返回</button>
+            </div>`;
         }
         
         // 淡入動畫

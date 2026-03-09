@@ -1,3 +1,4 @@
+(function() {
 /* ============================================
    象棋遊戲 (Chinese Chess)
    ============================================ */
@@ -495,3 +496,5 @@ chessStyle.textContent = `
     .chess-history { font-size: 0.8rem; color: var(--text-dim); max-height: 60px; overflow-y: auto; }
 `;
 document.head.appendChild(chessStyle);
+window.initGame = initGame;
+})();

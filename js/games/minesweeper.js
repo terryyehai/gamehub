@@ -1,3 +1,4 @@
+(function() {
 /* ============================================
    踩地雷遊戲
    ============================================ */
@@ -419,3 +420,5 @@ mineStyle.textContent = `
     }
 `;
 document.head.appendChild(mineStyle);
+window.initGame = initGame;
+})();

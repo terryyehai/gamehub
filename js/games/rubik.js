@@ -1,3 +1,4 @@
+(function() {
 /* ============================================
    魔術方塊遊戲 (Rubik's Cube)
    ============================================ */
@@ -275,3 +276,5 @@ rubikStyle.textContent = `
     .rubik-instructions { color: var(--text-dim); font-size: 0.9rem; }
 `;
 document.head.appendChild(rubikStyle);
+window.initGame = initGame;
+})();

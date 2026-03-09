@@ -1,3 +1,4 @@
+(function() {
 /* ============================================
    軍棋遊戲 (Military Chess / 陸軍棋)
    ============================================ */
@@ -522,3 +523,5 @@ milStyle.textContent = `
     .legend-items { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
 `;
 document.head.appendChild(milStyle);
+window.initGame = initGame;
+})();

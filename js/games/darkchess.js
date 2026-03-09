@@ -1,3 +1,4 @@
+(function() {
 /* ============================================
    暗棋遊戲 (Dark Chess / 軍棋翻棋)
    ============================================ */
@@ -415,3 +416,5 @@ dcStyle.textContent = `
     .darkchess-rules { color: var(--text-dim); font-size: 0.9rem; text-align: center; }
 `;
 document.head.appendChild(dcStyle);
+window.initGame = initGame;
+})();

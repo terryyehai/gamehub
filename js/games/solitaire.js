@@ -1,3 +1,4 @@
+(function() {
 /* ============================================
    接龍遊戲 (Solitaire)
    ============================================ */
@@ -189,3 +190,5 @@ solStyle.textContent = `
     }
 `;
 document.head.appendChild(solStyle);
+window.initGame = initGame;
+})();

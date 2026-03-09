@@ -1,3 +1,4 @@
+(function() {
 /* ============================================
    五子棋遊戲
    ============================================ */
@@ -530,3 +531,5 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+window.initGame = initGame;
+})();

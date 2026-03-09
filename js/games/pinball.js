@@ -1,3 +1,4 @@
+(function() {
 /* ============================================
    彈珠台遊戲 (Pinball)
    ============================================ */
@@ -425,3 +426,5 @@ pinballStyle.textContent = `
     .pinball-hint { color: var(--text-dim); font-size: 0.8rem; }
 `;
 document.head.appendChild(pinballStyle);
+window.initGame = initGame;
+})();

@@ -1,3 +1,4 @@
+(function() {
 /* ============================================
    貪食蛇遊戲
    ============================================ */
@@ -413,3 +414,5 @@ snakeStyle.textContent = `
     }
 `;
 document.head.appendChild(snakeStyle);
+window.initGame = initGame;
+})();

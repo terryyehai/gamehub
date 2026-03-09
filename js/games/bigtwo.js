@@ -1,3 +1,4 @@
+(function() {
 /* ============================================
    大老二遊戲 (Big Two / Dou Dizhu)
    ============================================ */
@@ -276,3 +277,5 @@ btStyle.textContent = `
     .bt-btn:hover { transform: scale(1.05); }
 `;
 document.head.appendChild(btStyle);
+window.initGame = initGame;
+})();

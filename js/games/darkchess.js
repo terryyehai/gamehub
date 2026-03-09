@@ -47,13 +47,18 @@ function cleanup() {
 function initGame(container) {
     const content = document.getElementById('gameContent');
     
+    // 確保容器有尺寸
+    content.style.display = 'flex';
+    content.style.flexDirection = 'column';
+    content.style.minHeight = '400px';
+    
     content.innerHTML = `
-        <div class="darkchess-container">
+        <div class="darkchess-container" style="display:flex;flex-direction:column;align-items:center;width:100%;height:100%;">
             <div class="darkchess-info">
                 <div class="darkchess-turn" id="darkChessTurn">紅方回合</div>
                 <button class="darkchess-btn" onclick="resetDarkChess()">🔄 重置</button>
             </div>
-            <canvas id="darkChessCanvas"></canvas>
+            <canvas id="darkChessCanvas" style="border:2px solid #8B4513;background:#1a1a2e;"></canvas>
             <div class="darkchess-rules">
                 <p>👆 點擊翻牌 | 吃子規則：大吃小，同級互換</p>
             </div>
@@ -63,11 +68,15 @@ function initGame(container) {
     canvasDC = document.getElementById('darkChessCanvas');
     ctxDC = canvasDC.getContext('2d');
     
-    resizeDarkChessCanvas();
-    window.addEventListener('resize', resizeDarkChessCanvas);
-    
+    // 初始化棋盤
     initDarkChess();
-    drawDarkChess();
+    
+    // 延遲設定畫布大小，確保 DOM 已渲染
+    setTimeout(() => {
+        resizeDarkChessCanvas();
+        window.addEventListener('resize', resizeDarkChessCanvas);
+        drawDarkChess();
+    }, 100);
     
     canvasDC.addEventListener('click', handleDarkChessClick);
     canvasDC.addEventListener('touchstart', handleDarkChessTouch, { passive: false });

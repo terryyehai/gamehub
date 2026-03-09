@@ -44,13 +44,18 @@ function cleanup() {
 function initGame(container) {
     const content = document.getElementById('gameContent');
     
+    // 確保容器有尺寸
+    content.style.display = 'flex';
+    content.style.flexDirection = 'column';
+    content.style.minHeight = '400px';
+    
     content.innerHTML = `
-        <div class="tetris-container">
+        <div class="tetris-container" style="display:flex;flex-direction:column;align-items:center;width:100%;height:100%;">
             <div class="tetris-info">
                 <div class="tetris-score">分數: <span id="tetrisScore">0</span></div>
                 <div class="tetris-level">等級: <span id="tetrisLevel">1</span></div>
             </div>
-            <canvas id="tetrisCanvas"></canvas>
+            <canvas id="tetrisCanvas" style="border:2px solid #00d4ff;background:#0a0a1a;"></canvas>
             <div class="tetris-controls">
                 <button class="tetris-btn" onclick="startTetris()">▶ 開始</button>
                 <button class="tetris-btn" onclick="resetTetris()">🔄 重置</button>
@@ -62,12 +67,15 @@ function initGame(container) {
     canvasTetris = document.getElementById('tetrisCanvas');
     ctxTetris = canvasTetris.getContext('2d');
     
-    // 先初始化遊戲數據，再調整畫布大小
+    // 先初始化遊戲數據
     initTetris();
-    resizeTetrisCanvas();
-    window.addEventListener('keydown', handleTetrisKey);
     
-    drawTetris();
+    // 延遲設定畫布大小，確保 DOM 已渲染
+    setTimeout(() => {
+        resizeTetrisCanvas();
+        window.addEventListener('keydown', handleTetrisKey);
+        drawTetris();
+    }, 100);
 }
 
 function resizeTetrisCanvas() {

@@ -16,9 +16,14 @@ let lastMove = null;
 function initGame(container) {
     const content = document.getElementById('gameContent');
     
+    // 確保容器有尺寸
+    content.style.display = 'flex';
+    content.style.flexDirection = 'column';
+    content.style.minHeight = '400px';
+    
     // 創建遊戲界面
     content.innerHTML = `
-        <div class="gomoku-container">
+        <div class="gomoku-container" style="display:flex;flex-direction:column;align-items:center;width:100%;height:100%;">
             <div class="gomoku-info">
                 <div class="player-indicator" id="playerIndicator">
                     <span class="piece black"></span>
@@ -29,7 +34,7 @@ function initGame(container) {
                     <button class="ctrl-btn" onclick="toggleAI()" title="對戰模式">🤖 ${vsAI ? '對人' : '對AI'}</button>
                 </div>
             </div>
-            <canvas id="gameCanvas"></canvas>
+            <canvas id="gameCanvas" style="border:1px solid #333;background:#1a1a2e;"></canvas>
             <div class="gomoku-result" id="resultDisplay" style="display:none;">
                 <span id="resultText"></span>
                 <button onclick="resetGame()">再來一局</button>
@@ -40,12 +45,15 @@ function initGame(container) {
     canvas = document.getElementById('gameCanvas');
     ctx = canvas.getContext('2d');
     
-    // 設定畫布大小
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-    
     // 初始化棋盤
     initBoard();
+    
+    // 延遲設定畫布大小，確保 DOM 已渲染
+    setTimeout(() => {
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        draw();
+    }, 100);
     
     // 綁定點擊事件
     canvas.addEventListener('click', handleClick);
@@ -53,9 +61,6 @@ function initGame(container) {
     
     // 鍵盤控制
     document.addEventListener('keydown', handleKey);
-    
-    // 初始繪製
-    draw();
 }
 
 function resizeCanvas() {

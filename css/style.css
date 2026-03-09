@@ -743,3 +743,115 @@ canvas {
     background: var(--accent);
     color: var(--primary);
 }
+
+/* ============================================
+   遊戲容器通用樣式
+   ============================================ */
+
+/* Solitaire */
+.solitaire-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    width: 100%;
+    min-height: 400px;
+}
+.sol-top { display: flex; justify-content: space-between; margin-bottom: 1rem; width: 100%; max-width: 500px; }
+.stock-waste { display: flex; gap: 0.5rem; }
+.stock, .waste, .foundation {
+    width: 60px; height: 85px;
+    background: var(--secondary);
+    border: 2px solid var(--card-border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+.foundations { display: flex; gap: 0.5rem; }
+.tableau { display: flex; gap: 0.3rem; justify-content: center; flex-wrap: wrap; width: 100%; max-width: 500px; }
+.tableau-col {
+    position: relative; width: 60px; height: 300px;
+}
+.tableau-card {
+    position: absolute; width: 60px; height: 85px;
+    background: var(--secondary);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+}
+.tableau-card.face-up { background: #fff; color: #000; }
+.card { width: 100%; height: 100%; padding: 3px; font-weight: bold; display: flex; flex-direction: column; }
+.card-top, .card-bottom { font-size: 0.7rem; }
+.card-center { font-size: 1.2rem; text-align: center; flex: 1; display: flex; align-items: center; justify-content: center; }
+.new-game-btn {
+    background: var(--accent); border: none; color: var(--primary);
+    padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem;
+    cursor: pointer; margin-top: 1rem;
+}
+
+/* Big Two */
+.bigtwo-container { 
+    display: flex; 
+    flex-direction: column; 
+    height: 100%; 
+    width: 100%;
+    padding: 0.5rem; 
+    gap: 0.5rem; 
+    min-height: 400px;
+}
+.bt-computer { display: flex; justify-content: center; flex-wrap: wrap; gap: 2px; min-height: 50px; }
+.bt-center { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+.bt-info { text-align: center; }
+.bt-turn { font-size: 1rem; font-weight: bold; margin-bottom: 0.3rem; }
+.bt-last { font-size: 0.8rem; color: var(--text-dim); }
+.bt-cards { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; min-height: 60px; }
+.bt-placeholder { color: var(--text-dim); font-size: 0.9rem; }
+.bt-card, .bt-card-back {
+    width: 40px; height: 55px; border-radius: 4px; display: flex;
+    align-items: center; justify-content: center; font-size: 0.8rem;
+    cursor: pointer;
+}
+.bt-card-back { background: var(--accent2); }
+.bt-card { background: #fff; color: #000; border: 1px solid #ccc; }
+.bt-card.selected { transform: translateY(-10px); background: var(--accent); }
+.bt-player { display: flex; justify-content: center; flex-wrap: wrap; gap: 2px; min-height: 60px; }
+.bt-controls { display: flex; justify-content: center; gap: 0.5rem; }
+.bt-btn {
+    padding: 0.5rem 1rem; border: none; border-radius: 6px;
+    font-size: 0.9rem; cursor: pointer;
+}
+.bt-btn.pass { background: var(--tertiary); color: var(--text); }
+.bt-btn.play { background: var(--accent); color: var(--primary); }
+.bt-btn.new { background: var(--accent2); color: #fff; }
+
+/* Rubik */
+.rubik-container { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.5rem; width: 100%; }
+.rubik-controls { display: flex; gap: 0.5rem; }
+.rubik-btn {
+    background: var(--tertiary); border: 1px solid var(--card-border);
+    color: var(--text); padding: 0.5rem 1rem; border-radius: 8px;
+    font-size: 0.9rem; cursor: pointer;
+}
+.rubik-btn:hover { background: var(--accent); border-color: var(--accent); }
+#rubikCanvas { border-radius: 12px; box-shadow: var(--glow); max-width: 100%; }
+.rubik-instructions { color: var(--text-dim); font-size: 0.8rem; }
+
+/* Military */
+.military-container { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; padding: 0.5rem; width: 100%; }
+.military-info { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 350px; }
+.military-turn { font-size: 1.1rem; font-weight: bold; }
+.military-btn { background: var(--tertiary); border: 1px solid var(--card-border); color: var(--text); padding: 0.4rem 0.8rem; border-radius: 8px; cursor: pointer; font-size: 0.9rem; }
+.military-btn:hover { background: var(--accent); border-color: var(--accent); }
+#militaryCanvas { border-radius: 8px; box-shadow: var(--glow); max-width: 100%; }
+.military-legend { color: var(--text-dim); font-size: 0.75rem; text-align: center; }
+.legend-title { font-weight: bold; margin-bottom: 0.2rem; }
+.legend-items { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.3rem; }
+
+/* Dark Chess */
+.darkchess-container { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; padding: 0.5rem; width: 100%; }
+.darkchess-info { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 400px; }
+.darkchess-turn { font-size: 1.1rem; font-weight: bold; }
+.darkchess-btn { background: var(--tertiary); border: 1px solid var(--card-border); color: var(--text); padding: 0.4rem 0.8rem; border-radius: 8px; cursor: pointer; font-size: 0.9rem; }
+.darkchess-btn:hover { background: var(--accent); border-color: var(--accent); }
+#darkChessCanvas { border-radius: 8px; box-shadow: var(--glow); max-width: 100%; }
+.darkchess-rules { color: var(--text-dim); font-size: 0.8rem; text-align: center; }

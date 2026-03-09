@@ -16,6 +16,10 @@ let canvasBT, ctxBT;
 const cardValues = ['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 const suits = ['♣', '♦', '♥', '♠']; // 梅花, 方塊, 紅心, 黑桃
 
+function cleanup() {
+    window.removeEventListener('resize', resizeChessCanvas);
+}
+
 function initGame(container) {
     const content = document.getElementById('gameContent');
     
@@ -277,5 +281,6 @@ btStyle.textContent = `
     .bt-btn:hover { transform: scale(1.05); }
 `;
 document.head.appendChild(btStyle);
-window.initGame = initGame;
+window.cleanup = cleanup;
+    window.initGame = initGame;
 })();

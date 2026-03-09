@@ -14,6 +14,10 @@ let powerUp = null;
 let obstacles = [];
 
 // 初始化遊戲
+function cleanup() {
+    window.removeEventListener('resize', resizeChessCanvas);
+}
+
 function initGame(container) {
     const content = document.getElementById('gameContent');
     
@@ -414,5 +418,6 @@ snakeStyle.textContent = `
     }
 `;
 document.head.appendChild(snakeStyle);
-window.initGame = initGame;
+window.cleanup = cleanup;
+    window.initGame = initGame;
 })();

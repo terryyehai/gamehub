@@ -53,6 +53,10 @@ const militaryPieces = {
     ]
 };
 
+function cleanup() {
+    window.removeEventListener('resize', resizeChessCanvas);
+}
+
 function initGame(container) {
     const content = document.getElementById('gameContent');
     
@@ -523,5 +527,6 @@ milStyle.textContent = `
     .legend-items { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
 `;
 document.head.appendChild(milStyle);
-window.initGame = initGame;
+window.cleanup = cleanup;
+    window.initGame = initGame;
 })();

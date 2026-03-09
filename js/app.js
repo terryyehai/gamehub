@@ -24,10 +24,10 @@ const games = {
         icon: '⚔️',
         file: 'js/games/military.js'
     },
-    rubik: {
-        name: '魔術方塊',
-        icon: '🧊',
-        file: 'js/games/rubik.js'
+    tetris: {
+        name: '俄羅斯方塊',
+        icon: '🧱',
+        file: 'js/games/tetris.js'
     },
     snake: {
         name: '貪食蛇',
@@ -159,15 +159,22 @@ function loadGame(gameId) {
     // 動畫
     content.style.opacity = '0';
     
+    // 清理舊的遊戲
+    window.initGame = null;
+    window.cleanup = null;
+    
     // 動態載入遊戲腳本
     const script = document.createElement('script');
     script.src = game.file;
     script.onload = () => {
-        // 遊戲腳本載入完成
+        // 遊戲腳本載入完成 - 使用 window.initGame 確保取得正確的函式
         try {
-            if (typeof initGame === 'function') {
-                initGame(content);
-                currentGame = { id: gameId, close: typeof closeGame === 'function' ? closeGame : null };
+            const gameInit = window.initGame;
+            if (typeof gameInit === 'function') {
+                gameInit(content);
+                currentGame = { id: gameId, close: window.cleanup || null };
+            } else {
+                throw new Error('initGame not found');
             }
         } catch(e) {
             console.error('Game error:', e);
@@ -210,6 +217,17 @@ function closeGame() {
     // 清空內容
     content.innerHTML = '';
     content.style.display = '';
+    
+    // 移除遊戲脚本
+    const scripts = document.querySelectorAll('#gameContent script');
+    scripts.forEach(s => s.remove());
+    
+    // 清理全域函式
+    window.initGame = null;
+    window.canvas = null;
+    window.ctx = null;
+    window.board = null;
+    window.draw = null;
     
     // 隱藏容器
     container.classList.remove('active');

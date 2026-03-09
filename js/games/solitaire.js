@@ -15,6 +15,10 @@ let cardHeight = 100;
 const suits = ['♠', '♥', '♦', '♣'];
 const colors = { '♠': '#fff', '♥': '#ff4444', '♦': '#ff4444', '♣': '#fff' };
 
+function cleanup() {
+    window.removeEventListener('resize', resizeChessCanvas);
+}
+
 function initGame(container) {
     const content = document.getElementById('gameContent');
     
@@ -190,5 +194,6 @@ solStyle.textContent = `
     }
 `;
 document.head.appendChild(solStyle);
-window.initGame = initGame;
+window.cleanup = cleanup;
+    window.initGame = initGame;
 })();

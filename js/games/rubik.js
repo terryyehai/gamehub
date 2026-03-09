@@ -16,6 +16,10 @@ let faceColors = {
     bottom: '#ffff00'   // 黃
 };
 
+function cleanup() {
+    window.removeEventListener('resize', resizeChessCanvas);
+}
+
 function initGame(container) {
     const content = document.getElementById('gameContent');
     
@@ -276,5 +280,6 @@ rubikStyle.textContent = `
     .rubik-instructions { color: var(--text-dim); font-size: 0.9rem; }
 `;
 document.head.appendChild(rubikStyle);
-window.initGame = initGame;
+window.cleanup = cleanup;
+    window.initGame = initGame;
 })();

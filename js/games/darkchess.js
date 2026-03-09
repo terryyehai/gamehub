@@ -40,6 +40,10 @@ const pieceRank = {
     '兵': 0, '卒': -1    // 士兵
 };
 
+function cleanup() {
+    window.removeEventListener('resize', resizeChessCanvas);
+}
+
 function initGame(container) {
     const content = document.getElementById('gameContent');
     
@@ -416,5 +420,6 @@ dcStyle.textContent = `
     .darkchess-rules { color: var(--text-dim); font-size: 0.9rem; text-align: center; }
 `;
 document.head.appendChild(dcStyle);
-window.initGame = initGame;
+window.cleanup = cleanup;
+    window.initGame = initGame;
 })();

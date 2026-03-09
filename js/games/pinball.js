@@ -17,6 +17,10 @@ let gravity = 0.3;
 let friction = 0.99;
 let bounce = 0.7;
 
+function cleanup() {
+    window.removeEventListener('resize', resizeChessCanvas);
+}
+
 function initGame(container) {
     const content = document.getElementById('gameContent');
     
@@ -426,5 +430,6 @@ pinballStyle.textContent = `
     .pinball-hint { color: var(--text-dim); font-size: 0.8rem; }
 `;
 document.head.appendChild(pinballStyle);
-window.initGame = initGame;
+window.cleanup = cleanup;
+    window.initGame = initGame;
 })();

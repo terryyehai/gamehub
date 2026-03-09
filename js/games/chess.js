@@ -28,6 +28,10 @@ const pieceValues = {
     帥: 100, 俥: 90, 傌: 40, 砲: 45, 士: 20, 象: 20, 卒: 10
 };
 
+function cleanup() {
+    window.removeEventListener('resize', resizeChessCanvas);
+}
+
 function initGame(container) {
     const content = document.getElementById('gameContent');
     
@@ -496,5 +500,6 @@ chessStyle.textContent = `
     .chess-history { font-size: 0.8rem; color: var(--text-dim); max-height: 60px; overflow-y: auto; }
 `;
 document.head.appendChild(chessStyle);
-window.initGame = initGame;
+window.cleanup = cleanup;
+    window.initGame = initGame;
 })();

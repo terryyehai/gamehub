@@ -25,6 +25,10 @@ const difficulties = {
     hard: { rows: 16, cols: 30, mines: 99 }
 };
 
+function cleanup() {
+    window.removeEventListener('resize', resizeChessCanvas);
+}
+
 function initGame(container) {
     const content = document.getElementById('gameContent');
     
@@ -420,5 +424,6 @@ mineStyle.textContent = `
     }
 `;
 document.head.appendChild(mineStyle);
-window.initGame = initGame;
+window.cleanup = cleanup;
+    window.initGame = initGame;
 })();

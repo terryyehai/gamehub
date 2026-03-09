@@ -239,7 +239,7 @@ function revealCell(r, c) {
     
     if (mineBoard[r][c] === 0) {
         // 空白，自動展開
- dr = -1; dr <=         for (let1; dr++) {
+        for (let dr = -1; dr <= 1; dr++) {
             for (let dc = -1; dc <= 1; dc++) {
                 if (dr === 0 && dc === 0) continue;
                 const nr = r + dr;

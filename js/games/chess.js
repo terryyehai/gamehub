@@ -249,9 +249,9 @@ function getValidMoves(col, row, piece) {
     // 根據棋子類型計算合法移動
     switch(piece) {
         case '車':
-getRookMoves(col, row, isRed));
+            moves.push(...getRookMoves(col, row, isRed));
             break;
-        case            moves.push(... '馬':
+        case '馬':
             moves.push(...getKnightMoves(col, row, isRed));
             break;
         case '炮':

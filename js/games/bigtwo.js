@@ -85,8 +85,8 @@ function renderBigTwo() {
     ).join('');
     
     // 玩家手牌
-    const playerEl = document.getElementBy');
-    playerElId('playerHand.innerHTML = playerHand.map((card, i) => 
+    const playerEl = document.getElementById('playerHand');
+    playerEl.innerHTML = playerHand.map((card, i) => 
         `<div class="bt-card ${card.selected ? 'selected' : ''}" onclick="selectCard(${i})">
             <span class="${getSuitColor(card.suit)}">${card.display}${card.suit}</span>
         </div>`

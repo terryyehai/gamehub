@@ -201,18 +201,20 @@ function closeGame() {
     
     // 清理遊戲
     if (currentGame?.cleanup && typeof currentGame.cleanup === 'function') {
-        currentGame.cleanup();
+        try {
+            currentGame.cleanup();
+        } catch(e) { console.log('cleanup error:', e); }
     }
     currentGame = null;
     
     // 清空內容
     content.innerHTML = '';
+    content.style.display = '';
     
-    // 移除遊戲腳本
-    const scripts = document.querySelectorAll('#gameContent script');
-    scripts.forEach(s => s.remove());
-    
+    // 隱藏容器
     container.classList.remove('active');
+    container.style.display = '';
+    
     sound.click();
 }
 

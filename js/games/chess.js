@@ -466,6 +466,18 @@ function movePiece(fromCol, fromRow, toCol, toRow) {
     chessBoard[toRow][toCol] = piece;
     chessBoard[fromRow][fromCol] = '';
     
+    // 檢查將帥是否面對面
+    if (areGeneralsFacing()) {
+        // 不允許！恢復
+        chessBoard[fromRow][fromCol] = piece;
+        chessBoard[toRow][toCol] = captured;
+        selectedPiece = null;
+        drawChess();
+        // 顯示提示
+        try { alert('將帥不能面對面！'); } catch(e) {}
+        return;
+    }
+    
     moveHistory.push({ from: { col: fromCol, row: fromRow }, to: { col: toCol, row: toRow }, piece, captured });
     
     selectedPiece = null;
@@ -474,6 +486,30 @@ function movePiece(fromCol, fromRow, toCol, toRow) {
     updateChessUI();
     drawChess();
     sound.move();
+}
+
+function areGeneralsFacing() {
+    let redY = -1, redX = -1;
+    let blackY = -1, blackX = -1;
+    
+    for (let r = 0; r < 10; r++) {
+        for (let c = 0; c < 9; c++) {
+            if (chessBoard[r][c] === '帥') { redY = r; redX = c; }
+            if (chessBoard[r][c] === '將') { blackY = r; blackX = c; }
+        }
+    }
+    
+    if (redX !== blackX) return false; // 不同 column
+    
+    // 檢查中間是否有棋子
+    const minR = Math.min(redY, blackY);
+    const maxR = Math.max(redY, blackY);
+    
+    for (let r = minR + 1; r < maxR; r++) {
+        if (chessBoard[r][redX]) return false;
+    }
+    
+    return true; // 面對面！
 }
 
 function updateChessUI() {

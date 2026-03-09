@@ -73,6 +73,7 @@ function initChessBoard() {
 }
 
 function drawChess() {
+    if (!ctxMil || !chessBoard || !chessBoard.length) return;
     if (!ctxChess) return;
     
     // 背景

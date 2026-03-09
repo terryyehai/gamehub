@@ -65,6 +65,7 @@ function initRubik() {
 }
 
 function drawRubik() {
+    if (!ctxRubik || !cube) return;
     if (!ctxRubik) return;
     
     ctxRubik.fillStyle = '#1a1a2e';

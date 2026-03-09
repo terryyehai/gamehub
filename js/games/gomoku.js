@@ -78,7 +78,7 @@ function initBoard() {
 }
 
 function draw() {
-    if (!ctx) return;
+    if (!ctx || !board || !board.length) return;
     
     // 清空畫布
     ctx.fillStyle = '#1a1a2e';

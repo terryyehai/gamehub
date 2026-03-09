@@ -118,6 +118,7 @@ function initDarkChess() {
 }
 
 function drawDarkChess() {
+    if (!ctxDC || !darkChessBoard || !darkChessBoard.length) return;
     if (!ctxDC) return;
     
     const w = canvasDC.width;

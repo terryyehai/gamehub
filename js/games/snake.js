@@ -176,6 +176,7 @@ function updateSnake() {
 }
 
 function drawSnake() {
+    if (!ctx2 || !snake || !snake.length) return;
     // 清空
     ctx2.fillStyle = '#0f0f23';
     ctx2.fillRect(0, 0, canvas2.width, canvas2.height);

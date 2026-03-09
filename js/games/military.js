@@ -155,6 +155,7 @@ function shuffleArray(arr) {
 }
 
 function drawMilitary() {
+    if (!ctxMil || !militaryBoard || !militaryBoard.length) return;
     if (!ctxMil) return;
     
     const w = canvasMil.width;

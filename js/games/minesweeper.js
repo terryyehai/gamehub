@@ -294,6 +294,7 @@ function checkWin() {
 }
 
 function drawMinesweeper() {
+    if (!ctxMine || !mineBoard || !mineBoard.length) return;
     // 背景
     ctxMine.fillStyle = '#1a1a2e';
     ctxMine.fillRect(0, 0, canvasMine.width, canvasMine.height);

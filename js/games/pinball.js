@@ -247,6 +247,7 @@ function checkFlipperCollision(ball, flipper) {
 
 function drawPinball() {
     if (!ctxPin) return;
+    if (!ctxPin) return;
     
     const w = canvasPin.width;
     const h = canvasPin.height;

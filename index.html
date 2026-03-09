@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>🎮 GameHub - 網頁遊戲平台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 背景動畫 -->
+    <div class="bg-animation">
+        <div class="stars"></div>
+        <div class="grid-lines"></div>
+    </div>
+
+    <!-- 載入畫面 -->
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="loader-title">GAMEHUB</div>
+            <div class="loader-bar">
+                <div class="loader-progress"></div>
+            </div>
+            <div class="loader-text">載入中...</div>
+        </div>
+    </div>
+
+    <!-- 導航選單 -->
+    <nav class="main-nav" id="mainNav">
+        <button class="nav-toggle" id="navToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="nav-menu" id="navMenu">
+            <a href="#" class="nav-logo">🎮</a>
+            <a href="#home" class="nav-link active">首頁</a>
+            <a href="#board" class="nav-link">棋類</a>
+            <a href="#puzzle" class="nav-link">益智</a>
+            <a href="#card" class="nav-link">牌類</a>
+            <button class="nav-sound" id="soundToggle">
+                <span class="sound-on">🔊</span>
+                <span class="sound-off">🔇</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 主頁面 -->
+    <main id="home">
+        <!-- 英雄區 -->
+        <section class="hero">
+            <h1 class="hero-title">
+                <span class="title-main">GAME</span><span class="title-sub">HUB</span>
+            </h1>
+            <p class="hero-subtitle">精選網頁遊戲平台</p>
+            <div class="hero-glow"></div>
+        </section>
+
+        <!-- 遊戲分類 -->
+        <section class="games-section" id="board">
+            <h2 class="section-title">
+                <span class="title-icon">♟️</span>
+                <span>棋類遊戲</span>
+            </h2>
+            <div class="games-grid">
+                <div class="game-card" data-game="gomoku" onclick="loadGame('gomoku')">
+                    <div class="card-glow"></div>
+                    <div class="card-icon">⭕</div>
+                    <div class="card-title">五子棋</div>
+                    <div class="card-desc">經典黑白對弈</div>
+                    <div class="card-status">熱門</div>
+                </div>
+                <div class="game-card" data-game="chess" onclick="loadGame('chess')">
+                    <div class="card-glow"></div>
+                    <div class="card-icon">🎲</div>
+                    <div class="card-title">象棋</div>
+                    <div class="card-desc">傳統中國象棋</div>
+                    <div class="card-status">熱門</div>
+                </div>
+                <div class="game-card" data-game="darkchess" onclick="loadGame('darkchess')">
+                    <div class="card-glow"></div>
+                    <div class="card-icon">🌑</div>
+                    <div class="card-title">暗棋</div>
+                    <div class="card-desc">翻轉吃子對弈</div>
+                </div>
+                <div class="game-card" data-game="military" onclick="loadGame('military')">
+                    <div class="card-glow"></div>
+                    <div class="card-icon">⚔️</div>
+                    <div class="card-title">軍棋</div>
+                    <div class="card-desc">四人軍棋大戰</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="games-section" id="puzzle">
+            <h2 class="section-title">
+                <span class="title-icon">🧩</span>
+                <span>益智遊戲</span>
+            </h2>
+            <div class="games-grid">
+                <div class="game-card" data-game="rubik" onclick="loadGame('rubik')">
+                    <div class="card-glow"></div>
+                    <div class="card-icon">🧊</div>
+                    <div class="card-title">魔術方塊</div>
+                    <div class="card-desc">3D 互動方塊</div>
+                </div>
+                <div class="game-card" data-game="snake" onclick="loadGame('snake')">
+                    <div class="card-glow"></div>
+                    <div class="card-icon">🐍</div>
+                    <div class="card-title">貪食蛇</div>
+                    <div class="card-desc">經典貪吃蛇</div>
+                </div>
+                <div class="game-card" data-game="minesweeper" onclick="loadGame('minesweeper')">
+                    <div class="card-glow"></div>
+                    <div class="card-icon">💣</div>
+                    <div class="card-title">踩地雷</div>
+                    <div class="card-desc">掃雷遊戲</div>
+                </div>
+                <div class="game-card" data-game="pinball" onclick="loadGame('pinball')">
+                    <div class="card-glow"></div>
+                    <div class="card-icon">🔵</div>
+                    <div class="card-title">彈珠台</div>
+                    <div class="card-desc">物理彈珠遊戲</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="games-section" id="card">
+            <h2 class="section-title">
+                <span class="title-icon">🃏</span>
+                <span>牌類遊戲</span>
+            </h2>
+            <div class="games-grid">
+                <div class="game-card" data-game="solitaire" onclick="loadGame('solitaire')">
+                    <div class="card-glow"></div>
+                    <div class="card-icon">🃏</div>
+                    <div class="card-title">接龍</div>
+                    <div class="card-desc">紙牌接龍</div>
+                </div>
+                <div class="game-card" data-game="bigtwo" onclick="loadGame('bigtwo')">
+                    <div class="card-glow"></div>
+                    <div class="card-icon">🃗</div>
+                    <div class="card-title">大老二</div>
+                    <div class="card-desc">經典撲克牌</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁腳 -->
+        <footer class="main-footer">
+            <p>© 2026 GameHub | 精選網頁遊戲</p>
+            <p class="footer-note">支援手機、平板、電腦</p>
+        </footer>
+    </main>
+
+    <!-- 遊戲容器 -->
+    <div class="game-container" id="gameContainer">
+        <div class="game-header">
+            <button class="game-back" onclick="closeGame()">
+                <span>←</span> 返回
+            </button>
+            <div class="game-title" id="gameTitle">遊戲</div>
+            <div class="game-menu">
+                <button class="game-btn" onclick="gameRestart()" title="重新開始">🔄</button>
+                <button class="game-btn" onclick="gameHelp()" title="說明">❓</button>
+            </div>
+        </div>
+        <div class="game-content" id="gameContent">
+            <!-- 遊戲內容會動態載入 -->
+        </div>
+    </div>
+
+    <!-- 說明Modal -->
+    <div class="modal" id="helpModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>遊戲說明</h3>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body" id="helpContent">
+                <!-- 說明內容 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 設定Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>設定</h3>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-item">
+                    <span>音效</span>
+                    <label class="switch">
+                        <input type="checkbox" id="soundSetting" checked onchange="toggleSound(this.checked)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <span>震動回饋</span>
+                    <label class="switch">
+                        <input type="checkbox" id="vibrateSetting" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils/sound.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

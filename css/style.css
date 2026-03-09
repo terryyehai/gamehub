@@ -1,0 +1,730 @@
+/* ============================================
+   GameHub - 現代化遊戲平台樣式
+   ============================================ */
+
+/* CSS 變數 */
+:root {
+    --primary: #0f0f23;
+    --secondary: #1a1a2e;
+    --tertiary: #16213e;
+    --accent: #00d4ff;
+    --accent2: #ff00aa;
+    --accent3: #00ff88;
+    --accent4: #ffaa00;
+    --text: #ffffff;
+    --text-dim: #8888aa;
+    --text-muted: #555566;
+    --card-bg: rgba(26, 26, 46, 0.8);
+    --card-border: rgba(0, 212, 255, 0.3);
+    --glow: 0 0 20px rgba(0, 212, 255, 0.5);
+    --glow-pink: 0 0 20px rgba(255, 0, 170, 0.5);
+    --glow-green: 0 0 20px rgba(0, 255, 136, 0.5);
+    
+    --font-display: 'Orbitron', 'Press Start 2P', sans-serif;
+    --font-body: 'Rajdhani', 'Noto Sans TC', sans-serif;
+    
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-full: 50%;
+    
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* 重置 */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: var(--font-body);
+    background: var(--primary);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    touch-action: manipulation;
+}
+
+/* 背景動畫 */
+.bg-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.stars {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+        radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1px 1px at 230px 80px, #fff, transparent),
+        radial-gradient(2px 2px at 300px 200px, rgba(255,255,255,0.7), transparent);
+    background-size: 350px 350px;
+    animation: twinkle 8s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.grid-lines {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background-image: 
+        linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: gridMove 20s linear infinite;
+    transform: perspective(500px) rotateX(60deg);
+}
+
+@keyframes gridMove {
+    0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+    100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+}
+
+/* 載入畫面 */
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.5s, visibility 0.5s;
+}
+
+.loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loader-content {
+    text-align: center;
+}
+
+.loader-title {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: glow 2s ease-in-out infinite;
+    letter-spacing: 0.2em;
+}
+
+@keyframes glow {
+    0%, 100% { filter: drop-shadow(0 0 10px var(--accent)); }
+    50% { filter: drop-shadow(0 0 30px var(--accent2)); }
+}
+
+.loader-bar {
+    width: 200px;
+    height: 4px;
+    background: var(--secondary);
+    border-radius: var(--radius-full);
+    margin: 20px auto;
+    overflow: hidden;
+}
+
+.loader-progress {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    border-radius: var(--radius-full);
+    animation: loadProgress 2s ease-out forwards;
+}
+
+@keyframes loadProgress {
+    to { width: 100%; }
+}
+
+.loader-text {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+}
+
+/* 導航 */
+.main-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(180deg, rgba(15, 15, 35, 0.95), transparent);
+}
+
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.nav-toggle span {
+    width: 25px;
+    height: 2px;
+    background: var(--text);
+    transition: var(--transition);
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.nav-logo {
+    font-size: 1.5rem;
+    text-decoration: none;
+}
+
+.nav-link {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+    position: relative;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    transition: var(--transition);
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--text);
+}
+
+.nav-link.active::after {
+    width: 100%;
+}
+
+.nav-sound {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.sound-on, .sound-off { display: none; }
+.sound-on { display: block; }
+.muted .sound-on { display: none; }
+.muted .sound-off { display: block; }
+
+/* 英雄區 */
+.hero {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 6rem 2rem 2rem;
+    position: relative;
+}
+
+.hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 15vw, 8rem);
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 1rem;
+}
+
+.title-main {
+    display: block;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+}
+
+.title-sub {
+    display: block;
+    font-size: 0.4em;
+    background: linear-gradient(135deg, var(--accent2), var(--accent4));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-dim);
+    margin-top: 1rem;
+}
+
+.hero-glow {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.3), transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 4s ease-in-out infinite;
+    z-index: -1;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+}
+
+/* 遊戲區塊 */
+.games-section {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--card-border);
+}
+
+.title-icon {
+    font-size: 1.8rem;
+}
+
+/* 遊戲卡片網格 */
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.game-card {
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: var(--transition-bounce);
+    overflow: hidden;
+}
+
+.game-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: var(--transition);
+}
+
+.game-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    border-color: var(--accent);
+    box-shadow: var(--glow);
+}
+
+.game-card:hover::before {
+    transform: scaleX(1);
+}
+
+.card-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, var(--accent), transparent 70%);
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: var(--transition);
+    pointer-events: none;
+}
+
+.game-card:hover .card-glow {
+    opacity: 0.3;
+    width: 200px;
+    height: 200px;
+}
+
+.card-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+.card-desc {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+}
+
+.card-status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--accent3);
+    color: var(--primary);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+}
+
+/* 遊戲容器 */
+.game-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--primary);
+    z-index: 200;
+    display: none;
+    flex-direction: column;
+}
+
+.game-container.active {
+    display: flex;
+}
+
+.game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: var(--secondary);
+    border-bottom: 1px solid var(--card-border);
+}
+
+.game-back {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.game-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+}
+
+.game-menu {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.game-btn {
+    background: var(--tertiary);
+    border: 1px solid var(--card-border);
+    color: var(--text);
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: var(--transition);
+}
+
+.game-btn:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.game-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 300;
+    padding: 1rem;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--secondary);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    max-width: 500px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.modal-header h3 {
+    font-family: var(--font-display);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 1rem;
+}
+
+/* 開關 */
+.switch {
+    position: relative;
+    width: 50px;
+    height: 26px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--tertiary);
+    border-radius: var(--radius-full);
+    transition: var(--transition);
+}
+
+.slider::before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background: var(--text);
+    border-radius: var(--radius-full);
+    transition: var(--transition);
+}
+
+input:checked + .slider {
+    background: var(--accent);
+}
+
+input:checked + .slider::before {
+    transform: translateX(24px);
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--card-border);
+}
+
+/* 頁腳 */
+.main-footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+}
+
+.footer-note {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+}
+
+/* 遊戲畫布樣式 */
+canvas {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .nav-toggle {
+        display: flex;
+    }
+    
+    .nav-menu {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background: var(--secondary);
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+        transform: translateY(-100%);
+        opacity: 0;
+        transition: var(--transition);
+    }
+    
+    .nav-menu.active {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    
+    .games-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .game-card {
+        padding: 1rem;
+    }
+    
+    .card-icon {
+        font-size: 2rem;
+    }
+    
+    .card-title {
+        font-size: 1rem;
+    }
+    
+    .hero-title {
+        font-size: 3rem;
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .games-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .main-nav {
+        padding: 0.8rem 1rem;
+    }
+    
+    .hero {
+        padding: 5rem 1rem 1rem;
+    }
+}
+
+/* 動畫效果 */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* 滾動條樣式 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent2);
+}
+
+/* 選取文字 */
+::selection {
+    background: var(--accent);
+    color: var(--primary);
+}

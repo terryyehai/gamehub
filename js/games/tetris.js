@@ -62,10 +62,11 @@ function initGame(container) {
     canvasTetris = document.getElementById('tetrisCanvas');
     ctxTetris = canvasTetris.getContext('2d');
     
+    // 先初始化遊戲數據，再調整畫布大小
+    initTetris();
     resizeTetrisCanvas();
     window.addEventListener('keydown', handleTetrisKey);
     
-    initTetris();
     drawTetris();
 }
 

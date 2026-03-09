@@ -282,8 +282,8 @@ function darkChessSelect(col, row) {
     if (!darkChessFlipped[row][col]) {
         darkChessFlipped[row][col] = true;
         
-        // 檢查是否獲勝
-        checkDarkChessWin();
+        // 翻牌不檢查勝利，只在吃子後檢查
+        // checkDarkChessWin();  // 移除：這行會導致一翻牌就获胜
         
         sound.flip();
         drawDarkChess();
